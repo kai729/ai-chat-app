@@ -127,7 +127,8 @@ export const useChat = () => {
     const userMessage: Message = { role: "user", content: prompt };
     currentMessages.push(userMessage);
     setMessages((prev) => [...prev, userMessage]);
-    await addMessageToSession(user!.uid, activeSessionId!, "user", prompt);
+    // await addMessageToSession(user!.uid, activeSessionId!, "user", prompt);
+    await saveMessage("user", prompt);
 
     setLoading(true);
 
@@ -144,7 +145,8 @@ export const useChat = () => {
       const data = await res.json();
       const modelMessage: Message = { role: "model", content: data.text };
       setMessages((prev) => [...prev, modelMessage]);
-      await addMessageToSession(user!.uid, activeSessionId!, "model", data.text);
+      // await addMessageToSession(user!.uid, activeSessionId!, "model", data.text);
+      await saveMessage("model", data.text);
     } catch (err) {
       console.error("❌ APIエラー", err);
     } finally {

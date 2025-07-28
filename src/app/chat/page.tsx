@@ -5,7 +5,7 @@ import ChatMain from "../../components/ChatMain";
 import { ChatProvider } from "../../contexts/ChatContext";
 // import { ThemeProvider, CssBaseline } from "@mui/material";
 import { ThemeProvider } from "../../contexts/ThemeContext";
-import { darkTheme } from "../../styles/theme";
+// import { darkTheme } from "../../styles/theme";
 
 export default function ChatPage() {
   return (

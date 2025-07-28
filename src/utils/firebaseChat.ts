@@ -1,5 +1,5 @@
 import { db } from "../lib/firebase";
-import { collection, addDoc, serverTimestamp, doc, setDoc, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp, getDocs, orderBy, query } from "firebase/firestore";
 
 /**
  * 新しいチャットセッションを作成
