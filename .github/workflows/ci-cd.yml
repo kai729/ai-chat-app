@@ -10,9 +10,20 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Copy test env as local
+        run: cp .env.test .env.local
+
       - name: Run lint
         run: npm run lint
 
@@ -20,18 +31,49 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
     steps:
-      - uses: actions/checkout@v3
-      - run: npm ci
-      - run: npm run test:unit
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy test env as local
+        run: cp .env.test .env.local
+
+      - name: Run unit tests
+        run: npm run test:unit
 
   e2e-tests:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
-      - uses: actions/checkout@v3
-      - run: npm ci
-      - name: Start app
-        run: npm run dev &
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Copy test env as local
+        run: cp .env.test .env.local
+
+      - name: Start app in background
+        run: |
+          npm run dev &
+          sleep 10 # アプリ起動待ち（必要に応じて調整）
+
       - name: Run E2E tests
         run: npx playwright test
 
@@ -44,12 +86,22 @@ jobs:
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
       - name: Install Vercel CLI
-        run: npm install --global vercel
-      - name: Vercel pull env
+        run: npm install -g vercel
+
+      - name: Pull Vercel environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      - name: Build
+
+      - name: Build with Vercel
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
       - name: Deploy to Vercel
         run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
