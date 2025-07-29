@@ -1,9 +1,7 @@
 declare module "react-syntax-highlighter" {
   import * as React from "react";
 
-  export const Prism: {
-    [key: string]: React.FC<Record<string, unknown>>;
-  };
+  export const Prism: { [key: string]: FC<any> };
 }
 
 declare module "react-syntax-highlighter/dist/cjs/styles/prism" {

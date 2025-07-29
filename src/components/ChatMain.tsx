@@ -7,13 +7,15 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 // import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 // import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighterRaw } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
 import { Box, Button, Typography, TextField, Paper, IconButton, CircularProgress } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 import { motion } from "framer-motion";
+
+const SyntaxHighlighter = SyntaxHighlighterRaw as React.FC<any>;
 
 const ChatMain = () => {
   const { loading: authLoading, isLoggedIn } = useAuth();
