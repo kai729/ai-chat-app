@@ -134,7 +134,11 @@ const ChatMain = () => {
                           const match = /language-(\w+)/.exec(props.className || "");
                           // const isInline = (node as any)?.inline ?? false;
                           const isInline =
-                            (node && typeof node === "object" && "inline" in node && (node as any).inline) ?? false;
+                            (node &&
+                              typeof node === "object" &&
+                              "inline" in node &&
+                              (node as { inline?: boolean }).inline) ??
+                            false;
 
                           return !isInline && match ? (
                             <SyntaxHighlighter
