@@ -2,7 +2,7 @@ declare module "react-syntax-highlighter" {
   import { ComponentType } from "react";
 
   export const Prism: {
-    [key: string]: ComponentType<any>;
+    [key: string]: ComponentType<Record<string, unknown>>;
   };
 }
 
