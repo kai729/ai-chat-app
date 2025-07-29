@@ -132,7 +132,7 @@ const ChatMain = () => {
                             false;
 
                           if (!isInline && match) {
-                            const lang = match[1] as keyof typeof SyntaxHighlighterRaw;
+                            const lang = match[1] as string;
                             const Highlighter = SyntaxHighlighterRaw[lang];
 
                             if (typeof Highlighter === "function") {
