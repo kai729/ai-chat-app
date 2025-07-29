@@ -8,13 +8,13 @@ import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-import { Box, Button, Typography, TextField, useTheme, Paper, IconButton, CircularProgress } from "@mui/material";
+import { Box, Button, Typography, TextField, Paper, IconButton, CircularProgress } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 import { motion } from "framer-motion";
 
 const ChatMain = () => {
-  const { user, loading: authLoading, isLoggedIn } = useAuth();
+  const { loading: authLoading, isLoggedIn } = useAuth();
   const { messages, input, setInput, systemPrompt, setSystemPrompt, sendMessage, loading, startNewSession } =
     useChatContext();
 
@@ -132,7 +132,9 @@ const ChatMain = () => {
                         // code({ node, className, children, ...props }) {
                         code({ node, children, ...props }) {
                           const match = /language-(\w+)/.exec(props.className || "");
-                          const isInline = (node as any)?.inline ?? false;
+                          // const isInline = (node as any)?.inline ?? false;
+                          const isInline =
+                            (node && typeof node === "object" && "inline" in node && (node as any).inline) ?? false;
 
                           return !isInline && match ? (
                             <SyntaxHighlighter

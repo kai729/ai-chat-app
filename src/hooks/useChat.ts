@@ -8,7 +8,8 @@ type Message = { role: Role; content: string; internal?: boolean };
 type Session = {
   id: string;
   title?: string;
-  createdAt?: any;
+  // createdAt?: any;
+  createdAt?: string | Date;
 };
 
 export const useChat = () => {
