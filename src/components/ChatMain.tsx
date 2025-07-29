@@ -18,7 +18,7 @@ const ChatMain = () => {
   const { messages, input, setInput, systemPrompt, setSystemPrompt, sendMessage, loading, startNewSession } =
     useChatContext();
 
-  const theme = useTheme();
+  // const theme = useTheme();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -129,7 +129,8 @@ const ChatMain = () => {
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        code({ node, className, children, ...props }) {
+                        // code({ node, className, children, ...props }) {
+                        code({ node, children, ...props }) {
                           const match = /language-(\w+)/.exec(props.className || "");
                           const isInline = (node as any)?.inline ?? false;
 

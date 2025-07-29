@@ -1,7 +1,8 @@
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const { prompt, history, systemPrompt } = await req.json();
+  // const { prompt, history, systemPrompt } = await req.json();
+  const { prompt, history } = await req.json();
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -65,8 +66,8 @@ export async function POST(req: Request) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err: any) {
-    console.error("❌ fetchエラー:", err);
+  } catch (err) {
+    console.error("❌ fetchエラー:", err instanceof Error ? err.message : err);
     return new Response(JSON.stringify({ error: "Gemini API 呼び出しエラー" }), {
       status: 500,
     });
