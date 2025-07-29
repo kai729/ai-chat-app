@@ -5,8 +5,6 @@ import { useChatContext } from "../contexts/ChatContext";
 import { useAuth } from "../hooks/useAuth";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Prism as SyntaxHighlighterRaw } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
 
@@ -15,14 +13,11 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check";
 import { motion } from "framer-motion";
 
-const SyntaxHighlighter = SyntaxHighlighterRaw as React.FC<any>;
-
 const ChatMain = () => {
   const { loading: authLoading, isLoggedIn } = useAuth();
   const { messages, input, setInput, systemPrompt, setSystemPrompt, sendMessage, loading, startNewSession } =
     useChatContext();
 
-  // const theme = useTheme();
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +72,7 @@ const ChatMain = () => {
       py={2}
       sx={{ bgcolor: "background.default", color: "text.primary", ml: 2, mr: 2 }}
     >
-      <Typography variant="h6" mb={2} data-testid="chat-title">
+      <Typography variant="h6" mb={2}>
         AIチャット
       </Typography>
 
@@ -85,7 +80,6 @@ const ChatMain = () => {
         🆕 新規チャット
       </Button>
 
-      {/* チャットメッセージエリア */}
       <Box
         flex={1}
         overflow="auto"
@@ -107,7 +101,6 @@ const ChatMain = () => {
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
               <Box
-                key={i}
                 display="flex"
                 justifyContent={msg.role === "user" ? "flex-end" : "flex-start"}
                 position="relative"
@@ -122,21 +115,15 @@ const ChatMain = () => {
                     color: msg.role === "user" ? "#fff" : "grey.100",
                     fontSize: "0.875rem",
                     whiteSpace: "pre-wrap",
-                    borderTopRightRadius: 4,
-                    borderTopLeftRadius: 16,
-                    borderBottomRightRadius: 16,
-                    borderBottomLeftRadius: 16,
-                    boxShadow: msg.role === "user" ? "0px 2px 6px rgba(0,0,0,0.3)" : undefined,
+                    borderRadius: 2,
                   }}
                 >
                   {msg.role === "model" ? (
                     <ReactMarkdown
                       remarkPlugins={[remarkGfm]}
                       components={{
-                        // code({ node, className, children, ...props }) {
-                        code({ node, children, ...props }) {
-                          const match = /language-(\w+)/.exec(props.className || "");
-                          // const isInline = (node as any)?.inline ?? false;
+                        code({ node, children, className, ...props }) {
+                          const match = /language-(\w+)/.exec(className || "");
                           const isInline =
                             (node &&
                               typeof node === "object" &&
@@ -144,22 +131,31 @@ const ChatMain = () => {
                               (node as { inline?: boolean }).inline) ??
                             false;
 
-                          return !isInline && match ? (
-                            <SyntaxHighlighter
-                              language={match[1]}
-                              style={oneDark}
-                              PreTag="div"
-                              customStyle={{
-                                padding: "1em",
-                                borderRadius: "0.5em",
-                                fontSize: "0.85rem",
-                                overflowX: "auto",
-                              }}
-                              {...props}
-                            >
-                              {String(children).replace(/\n$/, "")}
-                            </SyntaxHighlighter>
-                          ) : (
+                          if (!isInline && match) {
+                            const lang = match[1] as keyof typeof SyntaxHighlighterRaw;
+                            const Highlighter = SyntaxHighlighterRaw[lang];
+
+                            if (typeof Highlighter === "function") {
+                              return (
+                                <Highlighter
+                                  language={lang}
+                                  style={oneDark}
+                                  PreTag="div"
+                                  customStyle={{
+                                    padding: "1em",
+                                    borderRadius: "0.5em",
+                                    fontSize: "0.85rem",
+                                    overflowX: "auto",
+                                  }}
+                                  {...props}
+                                >
+                                  {String(children).replace(/\n$/, "")}
+                                </Highlighter>
+                              );
+                            }
+                          }
+
+                          return (
                             <code style={{ backgroundColor: "#eee", padding: "0.2em 0.4em", borderRadius: "4px" }}>
                               {children}
                             </code>
@@ -206,7 +202,6 @@ const ChatMain = () => {
         <div ref={bottomRef} />
       </Box>
 
-      {/* 入力欄 */}
       <Box
         component="form"
         onSubmit={(e) => {

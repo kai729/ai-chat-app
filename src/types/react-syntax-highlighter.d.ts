@@ -1,7 +1,16 @@
+// src/types/react-syntax-highlighter.d.ts
 declare module "react-syntax-highlighter" {
-  import * as React from "react";
+  import { FC, ReactNode } from "react";
 
-  export const Prism: { [key: string]: FC<any> };
+  export const Prism: {
+    [language: string]: FC<{
+      children: ReactNode;
+      language?: string;
+      style?: object;
+      PreTag?: string;
+      customStyle?: object;
+    }>;
+  };
 }
 
 declare module "react-syntax-highlighter/dist/cjs/styles/prism" {
